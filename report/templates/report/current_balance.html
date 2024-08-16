@@ -1,0 +1,55 @@
+{% extends 'temp_base.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <header class="blog-header py-3">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+              <div class="col-3 pt-1">
+                <a class="text-muted" href="{%url 'all_credits' %}">Back To All</a>
+              </div>
+            </div>
+        </header>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div>
+            <h2>Debit Entries</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Month</th>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for debit in debits %}
+                        <tr>
+                            <td>{{ debit.id }}</td>
+                            <td>{{ debit.month.name }}</td>
+                            <td>{{ debit.source }}</td>
+                            <td>{{ debit.amount }}</td>
+                            <td>{{ debit.created_at|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ debit.updated_at|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p>Total Credit Amount: {{ total_credit_amount }}</p>
+            <p>Total Others Credit Amount: {{ total_others_credits }}</p>
+            <h3>Overall Credit Total: {{ overall_credit_total }}</h3>
+            <p>Total Debit Amount: {{ total_debits }}</p>
+            <h3>Balance: {{ balance }}</h3>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,60 @@
+{% extends 'temp_base.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <header class="blog-header py-3">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+              <div class="col-3 pt-1">
+                <a class="text-muted" href="{%url 'all_credits' %}">Back To All</a>
+              </div>
+              <div class="col-9 text-center">
+                <a class="blog-header-logo text-dark" href="#">{{ member.name }}</a>
+              </div>
+            </div>
+        </header>
+        <div class="nav-scroller py-1 mb-2">
+            <nav class="nav d-flex justify-content-between">
+                {% for member in members %}
+                    <a class="p-2 text-muted" href='{%url "member_wise_credit" member.id %}'>{{ member.name }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Amount</th>
+                    <th>Booster Amount</th>
+                    <th>paid_at</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for credit in credits %}
+                <tr>
+                    <td>{{ credit.month__name }}</td>
+                    <td>{{ credit.total_amount }}</td>
+                    <td>{{ credit.total_booster_amount }}</td>
+                    <td>
+                        {% if credit.latest_paid_at %}
+                            {{ credit.latest_paid_at|date:"Y-m-d H:i:s" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Overall Totals</h3>
+        <p>Total Amount: {{ overall_totals.total_amount }}</p>
+        <p>Total Booster Amount: {{ overall_totals.total_booster_amount }}</p>
+        <h3>Sum of Total Amount and Total Booster Amount: {{ overall_sum }}</h3>
+    </div>
+</div>
+{% endblock content %}

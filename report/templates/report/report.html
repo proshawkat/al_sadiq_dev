@@ -1,0 +1,85 @@
+{% extends 'temp_base.html' %}
+
+
+{% block content %}
+{% load custom_filters %}
+<div class="row">
+    <div class="col-md-12">
+        <header class="blog-header py-3">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+              <div class="col-3 pt-1">
+                <a class="text-muted" href="{%url 'current_balance' %}">Current Account Balance</a>
+              </div>
+            </div>
+        </header>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Members' Credits</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        {% for month in months %}
+                            <th>{{ month.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                        <tr>
+                            <td><a href='{%url "member_wise_credit" member.id %}' class="btn btn-info">{{ member.name }}</a></td>
+                            {% for month in months %}
+                                <td>
+                                    {% with data=report_data|get_item:member.id %}
+                                        {% if data %}
+                                            {% with item=data|get_item:month.id %}
+                                                {% if item %}
+                                                    {{ item.amount|default:"0.00" }}<br>
+                                                    {%if item.booster_amount > 0 %}
+                                                        <span style="background:#b46d6d;color:#fff;padding:0 5px;">{{ item.booster_amount|default:"0.00" }}</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                            <td>
+                                {% with total_booster_amount=0 %}
+                                    {% for month in months %}
+                                        {% with item=report_data|get_item:member.id|get_item:month.id %}
+                                            {% if item %}
+                                                {% with booster_amount=item.booster_amount %}
+                                                    {% if booster_amount %}
+                                                        {% with total_booster_amount=total_booster_amount|add:booster_amount %}
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                {% endwith %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Totals</h2>
+        <p>Total Amount: {{ total_amount }}</p>
+        <p>Total Booster Amount: {{ total_booster_amount }}</p>
+        <p>Total Other Credits: {{ total_other_credits }}</p>
+        <p>Grand Total Amount (including other credits): {{ grand_total_amount }}</p>
+        <p>Grand Total Booster Amount: {{ grand_total_booster_amount }}</p>
+        <p style="background:#17a2b8;padding: 5px;color:#fff;">Combined Total (Grand Total Amount + Grand Total Booster Amount): {{ combined_total }}</p>
+    </div>
+</div>
+{% endblock content %}
